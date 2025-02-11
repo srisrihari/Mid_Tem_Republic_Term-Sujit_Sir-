@@ -67,7 +67,7 @@ pip install -r requirements.txt
 
 1. Using Python:
 ```bash
-python app.py --input test.csv --output predictions.csv --model model3_final.pth --verbose
+python src/app.py --input data/test.csv --output predictions.csv --model models/model3_final.pth --verbose
 ```
 
 2. Using Docker:
@@ -112,21 +112,7 @@ Key features:
 
 1. Main Branches:
    - `main`: Production-ready code
-   - `develop`: Development integration
 
-2. Supporting Branches:
-   - `feature/*`: New features
-   - `bugfix/*`: Bug fixes
-   - `release/*`: Release preparation
-
-3. Commit Convention:
-   - feat: New features
-   - fix: Bug fixes
-   - docs: Documentation
-   - style: Formatting
-   - refactor: Code restructuring
-   - test: Testing
-   - chore: Maintenance
 
 ## Model Evaluation
 
