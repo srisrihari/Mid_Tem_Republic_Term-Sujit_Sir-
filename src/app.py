@@ -231,17 +231,18 @@ def predict_single(model, device):
     print(f"{'❌ Low Risk' if prediction == 0 else '⚠️ High Risk'} of Thyroid Cancer")
     print(f"Probability: {probability:.2%}")
 
-def predict_from_csv(model, device):
+def predict_from_csv(model, device, input_path=None, output_path=None):
     """Make predictions from a CSV file."""
-    file_path = input("\n📂 Enter the CSV file path: ").strip()
+    if input_path is None:
+        input_path = input("\n📂 Enter the CSV file path: ").strip()
     
-    if not os.path.exists(file_path):
+    if not os.path.exists(input_path):
         print("❌ File not found! Please check the path and try again.")
         return
     
     try:
         print("\n📊 Processing data...")
-        input_data = pd.read_csv(file_path)
+        input_data = pd.read_csv(input_path)
         processed_data = preprocess_data(input_data)
         data_tensor = torch.tensor(processed_data.values, dtype=torch.float32).to(device)
         
@@ -258,11 +259,13 @@ def predict_from_csv(model, device):
             'Probability': probabilities.flatten()
         })
         
-        os.makedirs("predictions", exist_ok=True)
-        output_file = "predictions/thyroid_predictions.csv"
-        results.to_csv(output_file, index=False)
+        if output_path is None:
+            os.makedirs("predictions", exist_ok=True)
+            output_path = "predictions/thyroid_predictions.csv"
         
-        print(f"\n✅ Predictions saved as '{output_file}'!")
+        results.to_csv(output_path, index=False)
+        
+        print(f"\n✅ Predictions saved as '{output_path}'!")
         print(f"📊 Summary:")
         print(f"Total patients: {len(predictions)}")
         print(f"High risk cases: {sum(predictions.flatten())}")
@@ -272,26 +275,42 @@ def predict_from_csv(model, device):
         print(f"❌ Error: {str(e)}")
 
 def main():
+    parser = argparse.ArgumentParser(description='Thyroid Cancer Risk Prediction CLI')
+    parser.add_argument('--input', type=str, help='Input CSV file path')
+    parser.add_argument('--output', type=str, help='Output predictions file path')
+    parser.add_argument('--interactive', action='store_true', help='Run in interactive mode')
+    args = parser.parse_args()
+
     try:
         model, device = load_model()
         
-        while True:
-            print("\n📌 Thyroid Cancer Risk Prediction CLI")
-            print("1️⃣ Predict for a single patient")
-            print("2️⃣ Predict from a CSV file")
-            print("3️⃣ Exit")
+        if args.interactive:
+            # Interactive mode
+            while True:
+                print("\n📌 Thyroid Cancer Risk Prediction CLI")
+                print("1️⃣ Predict for a single patient")
+                print("2️⃣ Predict from a CSV file")
+                print("3️⃣ Exit")
+                
+                choice = input("\nEnter your choice: ").strip()
+                
+                if choice == '1':
+                    predict_single(model, device)
+                elif choice == '2':
+                    predict_from_csv(model, device)
+                elif choice == '3':
+                    print("\n👋 Exiting... Have a great day!")
+                    break
+                else:
+                    print("❌ Invalid choice! Please select 1, 2, or 3.")
+        else:
+            # Batch mode
+            if not args.input or not args.output:
+                print("❌ Error: --input and --output are required in batch mode")
+                return 1
             
-            choice = input("\nEnter your choice: ").strip()
-            
-            if choice == '1':
-                predict_single(model, device)
-            elif choice == '2':
-                predict_from_csv(model, device)
-            elif choice == '3':
-                print("\n👋 Exiting... Have a great day!")
-                break
-            else:
-                print("❌ Invalid choice! Please select 1, 2, or 3.")
+            print(f"\n📊 Processing file: {args.input}")
+            predict_from_csv(model, device, args.input, args.output)
     
     except Exception as e:
         print(f"❌ Error: {str(e)}")

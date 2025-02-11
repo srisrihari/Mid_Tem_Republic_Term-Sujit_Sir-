@@ -11,13 +11,15 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY src/app.py src/
-COPY . .        
+COPY . .
 
-# Create necessary directories
-RUN mkdir -p models data
-RUN chmod 777 /app/models
-RUN chmod 777 /app/data
+# Create necessary directories and set permissions
+RUN mkdir -p /app/models && \
+    mkdir -p /app/data && \
+    mkdir -p /app/predictions && \
+    chmod 777 /app/models && \
+    chmod 777 /app/data && \
+    chmod 777 /app/predictions
 
-# Set the entrypoint
+# Set the entrypoint to allow command line arguments
 ENTRYPOINT ["python", "src/app.py"] 

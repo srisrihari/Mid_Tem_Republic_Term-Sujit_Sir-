@@ -11,16 +11,15 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY src/ src/
-COPY templates/ templates/
-# Copy the rest of the application directory    
-COPY . .  
+COPY . .
 
-# Create necessary directories
-RUN mkdir -p uploads models data
-RUN chmod 777 /app/uploads 
-RUN chmod 777 /app/models
-RUN chmod 777 /app/data
+# Create necessary directories and set permissions
+RUN mkdir -p /app/uploads && \
+    mkdir -p /app/models && \
+    mkdir -p /app/data && \
+    chmod 777 /app/uploads && \
+    chmod 777 /app/models && \
+    chmod 777 /app/data
 
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser
