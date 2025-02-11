@@ -117,7 +117,10 @@ docker build -t thyroid-cli -f Dockerfile.cli .
 
 
 # Run predictions
-docker run -v $(pwd)/models:/app/models -v $(pwd)/data:/app/data thyroid-cli --input data/test.csv --output predictions/results.csv
+docker run -it -v $(pwd)/models:/app/models \
+    -v $(pwd)/data:/app/data \
+    -v $(pwd)/predictions:/app/predictions \
+    thyroid-cli --interactive
 ```
 
 ### Web Application
