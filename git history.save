@@ -1,7 +1,40 @@
+commit eb56b3a9cd52d5e8cc42e6499a0fe309b7cc50ed (HEAD -> main, origin/main)
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Wed Feb 12 02:49:31 2025 +0530
 
+    Updated Code
 
+commit 19d237a2c1e33fa7cdb74c623d4535d7af9349ab (test2)
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Tue Feb 11 13:28:26 2025 +0530
 
-commit 8977a3ca81ec7373ff3bbde856493ddd1822ce81 (HEAD -> main, origin/main)
+    Added more git history
+
+commit ad21d88107389b2ced3d5d8f32a52a0113327c1c
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Tue Feb 11 13:22:17 2025 +0530
+
+    Deited a line to directly run flask on main dir
+
+commit fdda23467ad62e301ed3c9ecddfb8923e786e263
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Tue Feb 11 12:38:16 2025 +0530
+
+    Edit a line in readme file
+
+commit 4cb3e26b8d2a618fef21b1251bc662f09e69f6fb
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Tue Feb 11 12:31:41 2025 +0530
+
+    Deleted unnecessary files
+
+commit 7332f157118aae2fd530bb061b40d32404a35e28
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Tue Feb 11 12:14:56 2025 +0530
+
+    Git History
+
+commit 8977a3ca81ec7373ff3bbde856493ddd1822ce81
 Author: srisrihari <kanyaboina78@gmail.com>
 Date:   Tue Feb 11 11:50:55 2025 +0530
 
@@ -21,6 +54,7 @@ Date:   Mon Feb 10 23:35:51 2025 +0530
 
 commit 027add758b2e16278b6a7b151d8ca8cecbb9d7e9
 Author: srisrihari <kanyaboina78@gmail.com>
+
 Date:   Mon Feb 10 12:48:12 2025 +0530
 
     Updated Code
