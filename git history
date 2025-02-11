@@ -1,0 +1,51 @@
+
+
+
+commit 8977a3ca81ec7373ff3bbde856493ddd1822ce81 (HEAD -> main, origin/main)
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Tue Feb 11 11:50:55 2025 +0530
+
+    Updated files
+
+commit 72fd93a2cf985c2161fb7e184562d38c4eb830bd
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Tue Feb 11 08:53:19 2025 +0530
+
+    Removed some files
+
+commit 0392b5b1b2f173931f41c01c3dec0140f4fed805
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Mon Feb 10 23:35:51 2025 +0530
+
+    Updated Code
+
+commit 027add758b2e16278b6a7b151d8ca8cecbb9d7e9
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Mon Feb 10 12:48:12 2025 +0530
+
+    Updated Code
+
+commit b820bc41fac9c0cd594a91eb6fd8c757480f5c91
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Mon Feb 10 12:07:19 2025 +0530
+
+    Updated Code
+
+commit 351287c3f28fcfd9e6d35bf921323fcec9c85535
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Mon Feb 10 11:55:40 2025 +0530
+
+    Training Model
+
+commit d0b0cd73f5098076160a61ab25d1d9907ff1634b
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Mon Feb 10 11:50:39 2025 +0530
+
+    Training Lr Model
+
+commit 5168358027664db6acd4d62a990ec92087a3bc53
+Author: srisrihari <kanyaboina78@gmail.com>
+Date:   Mon Feb 10 11:22:04 2025 +0530
+
+    Dataset for the assignment
+(END)
