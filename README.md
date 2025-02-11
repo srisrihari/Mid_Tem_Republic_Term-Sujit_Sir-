@@ -113,10 +113,11 @@ python src/app.py --input data/test.csv --output predictions.csv --model models/
 2. Using Docker:
 ```bash
 # Build the CLI image
-docker build -f Dockerfile.cli -t thyroid-cli .
+docker build -t thyroid-cli -f Dockerfile.cli .
+
 
 # Run predictions
-docker run -v $(pwd)/data:/app/data -v $(pwd)/models:/app/models thyroid-cli --input /app/data/test.csv --output /app/data/predictions.csv --model /app/models/model3_final.pth
+docker run -v $(pwd)/models:/app/models -v $(pwd)/data:/app/data thyroid-cli --input data/test.csv --output predictions/results.csv
 ```
 
 ### Web Application
@@ -131,8 +132,9 @@ python src/flask_app.py
 # Build the web app image
 docker build -t thyroid-web .
 
+
 # Run the web server
-docker run -p 5000:5000 -v $(pwd)/models:/app/models thyroid-web
+docker run -p 5001:5001 -v $(pwd)/models:/app/models -v $(pwd)/data:/app/data thyroid-web
 ```
 
 ## Docker Implementation
