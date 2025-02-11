@@ -4,7 +4,7 @@ FROM python:3.9-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    FLASK_APP=flask_app.py \
+    FLASK_APP=src/flask_app.py \
     FLASK_ENV=production
 
 # Set the working directory in the container
@@ -36,4 +36,4 @@ USER appuser
 EXPOSE 5000
 
 # Run the Flask application
-CMD ["python", "flask_app.py"]
+CMD ["python", "src/flask_app.py"]

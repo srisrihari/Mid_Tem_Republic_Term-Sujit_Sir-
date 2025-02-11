@@ -83,7 +83,7 @@ docker run -v $(pwd)/data:/app/data -v $(pwd)/models:/app/models thyroid-cli --i
 
 1. Using Python:
 ```bash
-python flask_app.py
+python src/flask_app.py
 ```
 
 2. Using Docker:
