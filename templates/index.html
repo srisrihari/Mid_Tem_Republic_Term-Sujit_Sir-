@@ -22,10 +22,10 @@
         <!-- Model Status Card -->
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">Model Status</h5>
+                <h5 class="card-title">🖥️ Model Status</h5>
                 <p class="card-text">
                     Current Model: <span class="badge {% if model_loaded %}bg-success{% else %}bg-danger{% endif %}">
-                        {% if model_loaded %}Loaded{% else %}Not Loaded{% endif %}
+                        {% if model_loaded %}✅ Loaded{% else %}❌ Not Loaded{% endif %}
                     </span>
                 </p>
                 <form action="/upload_model" method="post" enctype="multipart/form-data" class="mb-3">
@@ -69,7 +69,7 @@
 
         {% if predictions %}
         <div class="results">
-            <h3>Predictions</h3>
+            <h3>🎯 Predictions</h3>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -93,6 +93,79 @@
                 </table>
             </div>
         </div>
+        {% endif %}
+
+        {% if data_summary %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4>📊 Data Summary</h4>
+            </div>
+            <div class="card-body">
+                <h5>Dataset Overview</h5>
+                <p>Total Samples: {{ data_summary.total_samples }}</p>
+                
+                <h5>Numeric Features</h5>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Mean</th>
+                            <th>Median</th>
+                            <th>Std Dev</th>
+                            <th>Min</th>
+                            <th>Max</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for feature, stats in data_summary.numeric_summary.items() %}
+                        <tr>
+                            <td>{{ feature }}</td>
+                            <td>{{ "%.2f"|format(stats.mean) }}</td>
+                            <td>{{ "%.2f"|format(stats.median) }}</td>
+                            <td>{{ "%.2f"|format(stats.std) }}</td>
+                            <td>{{ "%.2f"|format(stats.min) }}</td>
+                            <td>{{ "%.2f"|format(stats.max) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <h5>Categorical Features</h5>
+                {% for feature, counts in data_summary.categorical_summary.items() %}
+                <h6>{{ feature }}</h6>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Value</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for value, count in counts.items() %}
+                        <tr>
+                            <td>{{ value }}</td>
+                            <td>{{ count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if prediction_stats %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4>Prediction Summary</h4>
+            </div>
+            <div class="card-body">
+                <p>Total Predictions: {{ prediction_stats.total_predictions }}</p>
+                <p>Malignant Cases: {{ prediction_stats.malignant_count }} ({{ "%.1f"|format(prediction_stats.malignant_percentage) }}%)</p>
+                <p>Benign Cases: {{ prediction_stats.benign_count }}</p>
+                <p>Average Risk Probability: {{ "%.2f"|format(prediction_stats.average_probability) }}</p>
+            </div>
+        </div>
+        {% endif %}
         {% endif %}
 
         <div class="card mt-4">

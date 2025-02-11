@@ -9,6 +9,46 @@ This project implements a machine learning system for thyroid cancer risk predic
 3. **MLP Model**: Deep learning model for thyroid cancer risk classification
 4. **Docker Support**: Containerization for both CLI and web applications
 
+## Project Architecture Diagram
+
+```mermaid
+graph TD
+    A[User] --> B{Prediction Interface}
+    B -->|CLI| C[CLI Application]
+    B -->|Web| D[Flask Web Interface]
+    
+    C --> E[Preprocessing Module]
+    D --> E
+    
+    E --> F[MLP Model]
+    F --> G{Prediction Result}
+    G -->|Benign 0| H[Low Risk]
+    G -->|Malignant 1| I[High Risk]
+    
+    subgraph Data Flow
+    J[Input Features] --> E
+    E --> K[Feature Preprocessing]
+    K --> F
+    end
+    
+    subgraph Model Components
+    L[models/model1_final.pth]
+    M[models/model2_final.pth]
+    N[models/model3_final.pth]
+    end
+    
+    F --> L
+    F --> M
+    F --> N
+```
+
+### Diagram Explanation
+- The diagram shows the overall system architecture for the Thyroid Cancer Risk Prediction System
+- Users can interact via CLI or Web Interface
+- Both interfaces use the same preprocessing and model prediction pipeline
+- Multiple model variants are available for prediction
+- The system provides a binary classification output (Benign/Malignant)
+
 ## MLP Model Architecture
 
 The model uses a Multi-Layer Perceptron with the following architecture:

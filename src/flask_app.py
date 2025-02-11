@@ -5,21 +5,14 @@ import torch
 import torch.nn as nn
 import os
 from werkzeug.utils import secure_filename
-import logging
 from datetime import datetime
 import io
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+import pickle
 
 class MultiLayerMultiPerceptron(nn.Module):
     def __init__(self):
         super(MultiLayerMultiPerceptron, self).__init__()
-        self.fc1 = nn.Linear(16, 64)
+        self.fc1 = nn.Linear(25, 64)
         self.relu1 = nn.ReLU()
         self.fc2 = nn.Linear(64, 32)
         self.relu2 = nn.ReLU()
@@ -55,118 +48,143 @@ def validate_input_data(data):
     
     return True
 
+def load_preprocessing_objects():
+    """Load the preprocessing objects from pickle file."""
+    try:
+        with open('models/preprocessing_objects.pkl', 'rb') as f:
+            return pickle.load(f)
+    except Exception as e:
+        print(f"Error loading preprocessing objects: {str(e)}")
+        raise
+
+def clean_data(data):
+    """Clean input data before preprocessing."""
+    data = data.copy()
+    
+    # Strip whitespace from string columns
+    for col in data.columns:
+        if data[col].dtype == 'object':
+            data[col] = data[col].str.strip()
+    
+    # Remove any hidden characters
+    for col in data.columns:
+        if data[col].dtype == 'object':
+            data[col] = data[col].str.replace('\r', '').str.replace('\n', '')
+    
+    return data
+
 def preprocess_data(data):
     """Preprocess input data for model prediction."""
     try:
+        # Clean data first
+        data = clean_data(data)
+        
+        # Load preprocessing objects
+        prep_objects = load_preprocessing_objects()
+        label_encoder = prep_objects['label_encoders']
+        one_hot_encoder = prep_objects['one_hot_encoder']
+        binary_cols = prep_objects['binary_columns']
+        nonbinary_cols = prep_objects['nonbinary_columns']
+        
         # Make a copy to avoid modifying the original data
         data = data.copy()
+        
+        # Log initial state
+        print("Initial data columns: %s", data.columns.tolist())
+        print("Binary columns from training: %s", binary_cols)
+        print("Non-binary columns from training: %s", nonbinary_cols)
         
         # Validate input data
         validate_input_data(data)
         
-        # Binary columns
-        binary_cols = ['Gender', 'Family_History', 'Radiation_Exposure', 
-                      'Iodine_Deficiency', 'Smoking', 'Obesity', 'Diabetes']
-        
-        # Non-binary columns for one-hot encoding
-        nonbinary_cols = ['Country', 'Ethnicity']
-        
-        # Numeric columns
-        numeric_cols = ['Age', 'TSH_Level', 'T3_Level', 'T4_Level', 'Nodule_Size']
-        
-        # Columns to drop
-        drop_cols = ['Patient_ID', 'Label', 'Thyroid_Cancer_Risk', 'Diagnosis']
-        
-        # Process binary columns
-        binary_mapping = {
-            'Yes': 1, 'No': 0,
-            'Male': 1, 'Female': 0,
-            True: 1, False: 0,
-            'true': 1, 'false': 0,
-            'TRUE': 1, 'FALSE': 0,
-            'yes': 1, 'no': 0,
-            'male': 1, 'female': 0
-        }
-        
-        # Convert binary columns
+        # Process binary columns first
         for col in binary_cols:
-            data[col] = data[col].astype(str).str.lower()
-            data[col] = data[col].map(binary_mapping)
-            if data[col].isna().any():
-                raise ValueError(f"Invalid values in column {col}")
-            data[col] = data[col].astype(np.float32)
+            if col in data.columns:
+                # Convert to string and proper case based on column
+                data[col] = data[col].astype(str).str.strip()
+                if col == 'Gender':
+                    # Capitalize first letter for Gender
+                    data[col] = data[col].str.title()
+                else:
+                    # Capitalize for Yes/No columns
+                    data[col] = data[col].str.capitalize()
+                
+                print(f"Unique values in {col} before mapping: {data[col].unique()}")
+                print(f"Expected classes for {col}: {label_encoder[col].classes_}")
+                
+                # Map values using label encoder directly
+                try:
+                    data[col] = label_encoder[col].transform(data[col])
+                except ValueError as e:
+                    print(f"Error encoding {col}: {str(e)}")
+                    print(f"Unique values in {col}: {data[col].unique()}")
+                    print(f"Label encoder classes: {label_encoder[col].classes_}")
+                    raise
+                
+                print(f"Unique values in {col} after encoding: {data[col].unique()}")
         
-        # Convert numeric columns
+        # Process categorical columns
+        if any(col in data.columns for col in nonbinary_cols):
+            # Prepare categorical data
+            cat_data = data[nonbinary_cols].copy()
+            
+            # Get the actual categories from the encoder
+            encoder_categories = {
+                col: one_hot_encoder.categories_[i].tolist() 
+                for i, col in enumerate(nonbinary_cols)
+            }
+            print(f"Encoder categories: {encoder_categories}")
+            
+            # Map unknown categories to 'other'
+            for col in nonbinary_cols:
+                cat_data[col] = cat_data[col].str.lower().str.strip()
+                # Map any value not in known categories to 'other'
+                cat_data[col] = cat_data[col].apply(
+                    lambda x: x if x.lower() in [c.lower() for c in encoder_categories[col]] else 'other'
+                )
+                # Match the exact case from training
+                for category in encoder_categories[col]:
+                    mask = cat_data[col].str.lower() == category.lower()
+                    cat_data.loc[mask, col] = category
+                
+                print(f"Unique values in {col} after mapping: {cat_data[col].unique()}")
+            
+            # Apply one-hot encoding
+            try:
+                encoded_data = one_hot_encoder.transform(cat_data)
+                encoded_df = pd.DataFrame(
+                    encoded_data,
+                    columns=one_hot_encoder.get_feature_names_out(nonbinary_cols)
+                )
+                print(f"Encoded columns: {encoded_df.columns.tolist()}")
+                data = pd.concat([data, encoded_df], axis=1)
+                data.drop(nonbinary_cols, axis=1, inplace=True)
+            except Exception as e:
+                print(f"Error in one-hot encoding: {str(e)}")
+                print(f"Categories in data: {[cat_data[col].unique() for col in nonbinary_cols]}")
+                print(f"Expected categories: {encoder_categories}")
+                raise
+        
+        # Process numeric columns
+        numeric_cols = ['Age', 'TSH_Level', 'T3_Level', 'T4_Level', 'Nodule_Size']
         for col in numeric_cols:
             data[col] = pd.to_numeric(data[col], errors='coerce')
             if data[col].isna().any():
                 raise ValueError(f"Invalid numeric values in column {col}")
             data[col] = data[col].astype(np.float32)
         
-        # Process categorical columns
-        for col in nonbinary_cols:
-            data[col] = data[col].astype(str).str.lower().str.strip()
-        
-        # Define expected categories for each categorical column
-        expected_categories = {
-            'Country': ['india', 'china', 'other'],
-            'Ethnicity': ['caucasian', 'asian', 'other']
-        }
-        
-        # Create dummy variables with expected categories
-        dummy_dfs = []
-        for col in nonbinary_cols:
-            # Map any value not in expected categories to 'other'
-            data[col] = data[col].apply(lambda x: x if x in expected_categories[col] else 'other')
-            # Create dummies with all expected categories
-            dummies = pd.get_dummies(data[col], prefix=col)
-            # Add missing columns with zeros if they don't exist
-            for cat in expected_categories[col]:
-                col_name = f"{col}_{cat}"
-                if col_name not in dummies.columns:
-                    dummies[col_name] = 0
-            # Drop the 'other' category column
-            other_col = f"{col}_other"
-            if other_col in dummies.columns:
-                dummies = dummies.drop(columns=[other_col])
-            # Sort columns to ensure consistent order
-            dummies = dummies.reindex(sorted(dummies.columns), axis=1)
-            dummy_dfs.append(dummies)
-        
         # Drop unnecessary columns
+        drop_cols = ['Patient_ID', 'Label', 'Thyroid_Cancer_Risk', 'Diagnosis']
         data = data.drop(columns=[col for col in drop_cols if col in data.columns])
         
-        # Combine all features in a specific order
-        feature_data = pd.concat([
-            data[numeric_cols],  # 5 features
-            data[binary_cols],   # 7 features
-            dummy_dfs[0],        # 2 features for Country (india, china)
-            dummy_dfs[1]         # 2 features for Ethnicity (asian, caucasian)
-        ], axis=1)
+        # Log final state
+        print("Final data shape: %s", data.shape)
+        print("Final columns: %s", data.columns.tolist())
         
-        # Convert to float32
-        feature_data = feature_data.astype(np.float32)
-        
-        # Ensure we have exactly 16 features
-        expected_features = (
-            len(numeric_cols) +  # 5 numeric features
-            len(binary_cols) +   # 7 binary features
-            (len(expected_categories['Country']) - 1) +  # 2 country features (excluding 'other')
-            (len(expected_categories['Ethnicity']) - 1)  # 2 ethnicity features (excluding 'other')
-        )
-        
-        if feature_data.shape[1] != expected_features:
-            raise ValueError(f"Expected {expected_features} features but got {feature_data.shape[1]}")
-        
-        # Log feature information
-        logger.debug(f"Preprocessed data shape: {feature_data.shape}")
-        logger.debug(f"Preprocessed columns: {feature_data.columns.tolist()}")
-        logger.debug(f"Feature data types: {feature_data.dtypes}")
-        
-        return feature_data
+        return data
     
     except Exception as e:
-        logger.error(f"Error in preprocessing data: {str(e)}")
+        print(f"Error in preprocessing data: {str(e)}")
         raise
 
 def load_model(model_path):
@@ -179,18 +197,18 @@ def load_model(model_path):
         state_dict = torch.load(model_path, map_location=device)
         
         # If the model was saved with a different architecture, we need to reinitialize
-        if 'fc1.weight' in state_dict and state_dict['fc1.weight'].shape[1] != 16:
-            logger.info("Reinitializing model with correct input size")
+        if 'fc1.weight' in state_dict and state_dict['fc1.weight'].shape[1] != 25:
+            print("Reinitializing model with correct input size")
             model = MultiLayerMultiPerceptron()  # Reinitialize with correct size
         else:
             model.load_state_dict(state_dict)
             
         model.to(device)
         model.eval()
-        logger.info(f"Model loaded successfully using device: {device}")
+        print(f"Model loaded successfully using device: {device}")
         return model, device
     except Exception as e:
-        logger.error(f"Error loading model: {str(e)}")
+        print(f"Error loading model: {str(e)}")
         raise
 
 # Configure upload folders
@@ -224,10 +242,14 @@ def initialize_model(model_path):
     """Initialize or reinitialize the model with a new model file."""
     global model, device
     try:
+        # Try to load preprocessing objects first
+        load_preprocessing_objects()
+        
+        # Then load the model
         model, device = load_model(model_path)
         return True
     except Exception as e:
-        logger.error(f"Error initializing model: {str(e)}")
+        print(f"Error initializing model: {str(e)}")
         model, device = None, None
         return False
 
@@ -237,9 +259,9 @@ try:
     if os.path.exists(default_model_path):
         initialize_model(default_model_path)
     else:
-        logger.warning("No default model found at startup")
+        print("No default model found at startup")
 except Exception as e:
-    logger.error(f"Error loading default model at startup: {str(e)}")
+    print(f"Error loading default model at startup: {str(e)}")
 
 @app.route('/')
 def home():
@@ -284,7 +306,7 @@ def upload_model():
                                 model_loaded=model is not None)
     
     except Exception as e:
-        logger.error(f"Error in upload_model endpoint: {str(e)}")
+        print(f"Error in upload_model endpoint: {str(e)}")
         return render_template('index.html', 
                             error=f'Error uploading model: {str(e)}',
                             model_loaded=model is not None)
@@ -302,89 +324,117 @@ def health_check():
 def predict():
     """Endpoint for making predictions on uploaded CSV data."""
     try:
-        # Check if model is loaded
         if model is None:
             return render_template('index.html', 
-                                error='No model loaded. Please upload a model first',
+                                error='⚠️ No model loaded. Please upload a model first',
                                 model_loaded=False)
         
-        # Validate file upload
         if 'file' not in request.files:
             return render_template('index.html', 
-                                error='No file uploaded',
+                                error='⚠️ No file uploaded',
                                 model_loaded=True)
         
         file = request.files['file']
         if file.filename == '':
             return render_template('index.html', 
-                                error='No file selected',
+                                error='⚠️ No file selected',
                                 model_loaded=True)
         
         if not allowed_file(file.filename):
             return render_template('index.html', 
-                                error='Invalid file type. Only CSV files are allowed',
+                                error='⚠️ Invalid file type. Only CSV files are allowed',
                                 model_loaded=True)
         
-        # Save and process file
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
         try:
-            # Read and preprocess data
+            print("📊 Processing uploaded file...")
             data = pd.read_csv(filepath)
+            
+            # Generate data summary
+            summary = {
+                'total_samples': len(data),
+                'columns': data.columns.tolist(),
+                'numeric_summary': {},
+                'categorical_summary': {}
+            }
+            
+            # Numeric columns summary
+            numeric_cols = ['Age', 'TSH_Level', 'T3_Level', 'T4_Level', 'Nodule_Size']
+            for col in numeric_cols:
+                if col in data.columns:
+                    summary['numeric_summary'][col] = {
+                        'mean': float(data[col].mean()),
+                        'median': float(data[col].median()),
+                        'std': float(data[col].std()),
+                        'min': float(data[col].min()),
+                        'max': float(data[col].max())
+                    }
+            
+            # Categorical columns summary
+            categorical_cols = ['Gender', 'Country', 'Ethnicity', 'Family_History', 
+                              'Radiation_Exposure', 'Iodine_Deficiency', 'Smoking', 
+                              'Obesity', 'Diabetes']
+            for col in categorical_cols:
+                if col in data.columns:
+                    value_counts = data[col].value_counts()
+                    summary['categorical_summary'][col] = {
+                        str(k): int(v) for k, v in value_counts.items()
+                    }
+            
+            # Preprocess data and make predictions
             processed_data = preprocess_data(data)
+            data_tensor = torch.tensor(processed_data.values, dtype=torch.float32).to(device)
             
-            # Ensure data is 2D
-            if len(processed_data.shape) == 1:
-                processed_data = processed_data.reshape(1, -1)
-            
-            # Convert to numpy array
-            data_array = processed_data.to_numpy(dtype=np.float32)
-            
-            # Convert to tensor
-            data_tensor = torch.tensor(data_array, dtype=torch.float32).to(device)
-            
-            # Make predictions
+            print("🧠 Running predictions...")
             with torch.no_grad():
                 outputs = model(data_tensor)
                 predictions = (outputs.cpu().numpy() > 0.5).astype(int)
                 probabilities = outputs.cpu().numpy()
             
-            # Flatten predictions and probabilities
-            predictions = predictions.flatten()
-            probabilities = probabilities.flatten()
-            
-            # Prepare results
+            # Prepare prediction results
             results = []
-            for i, (pred, prob) in enumerate(zip(predictions, probabilities)):
+            for i, (pred, prob) in enumerate(zip(predictions.flatten(), probabilities.flatten())):
                 result = {
-                    'patient_id': data['Patient_ID'].iloc[i] if 'Patient_ID' in data.columns else i,
+                    'patient_id': int(data['Patient_ID'].iloc[i]) if 'Patient_ID' in data.columns else i,
                     'prediction': int(pred),
                     'diagnosis': 'Malignant' if pred == 1 else 'Benign',
                     'probability': float(prob)
                 }
                 results.append(result)
             
+            # Calculate prediction statistics
+            prediction_stats = {
+                'total_predictions': len(predictions),
+                'malignant_count': int(np.sum(predictions)),
+                'benign_count': int(len(predictions) - np.sum(predictions)),
+                'malignant_percentage': float(np.sum(predictions) / len(predictions) * 100),
+                'average_probability': float(np.mean(probabilities))
+            }
+            
             return render_template('index.html', 
                                 predictions=results,
+                                data_summary=summary,
+                                prediction_stats=prediction_stats,
+                                success='✅ Predictions completed successfully!',
                                 model_loaded=True)
         
         except Exception as e:
-            logger.error(f"Error processing file: {str(e)}")
+            print(f"❌ Error processing file: {str(e)}")
             return render_template('index.html', 
-                                error=f'Error processing file: {str(e)}',
+                                error=f'❌ Error processing file: {str(e)}',
                                 model_loaded=True)
         
         finally:
-            # Clean up
             if os.path.exists(filepath):
                 os.remove(filepath)
     
     except Exception as e:
-        logger.error(f"Error in predict endpoint: {str(e)}")
+        print(f"❌ Server error: {str(e)}")
         return render_template('index.html', 
-                            error=f'Server error: {str(e)}',
+                            error=f'❌ Server error: {str(e)}',
                             model_loaded=model is not None)
 
 @app.route('/api/predict', methods=['POST'])
@@ -454,7 +504,7 @@ def api_predict():
             })
         
         except Exception as e:
-            logger.error(f"Error processing file: {str(e)}")
+            print(f"Error processing file: {str(e)}")
             return jsonify({
                 'error': 'Error processing file',
                 'details': str(e)
@@ -466,11 +516,17 @@ def api_predict():
                 os.remove(filepath)
     
     except Exception as e:
-        logger.error(f"Error in predict endpoint: {str(e)}")
+        print(f"Error in predict endpoint: {str(e)}")
         return jsonify({
             'error': 'Server error',
             'details': str(e)
         }), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    # Initialize model
+    default_model_path = os.path.join(app.config['MODEL_FOLDER'], 'model3_final.pth')
+    if os.path.exists(default_model_path):
+        initialize_model(default_model_path)
+    
+    # Run the app on 0.0.0.0 to make it accessible from outside the container
+    app.run(host='0.0.0.0', port=5001)

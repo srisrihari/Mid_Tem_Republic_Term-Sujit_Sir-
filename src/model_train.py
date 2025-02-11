@@ -11,8 +11,9 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 import seaborn as sns
 from torch.utils.data import DataLoader, TensorDataset
+import pickle
 
-data = pd.read_csv('thyroid_cancer_risk_data.csv')  # reading the data from local file
+data = pd.read_csv('data/thyroid_cancer_risk_data.csv')  # reading the data from local file
 
 ## EDA and Pre-processing
 
@@ -49,6 +50,18 @@ data = pd.concat([data, one_hot_data], axis=1)
 data.drop(nonbinarycol, axis=1, inplace=True)
 
 data.head()
+
+# After preprocessing steps, save the encoders and preprocessing objects
+preprocessing_objects = {
+    'label_encoders': label_encoder,
+    'one_hot_encoder': one_hot_encoder,
+    'binary_columns': binarycol,
+    'nonbinary_columns': nonbinarycol
+}
+
+# Save preprocessing objects
+with open('models/preprocessing_objects.pkl', 'wb') as f:
+    pickle.dump(preprocessing_objects, f)
 
 # Splitting the data into train and test
 x = data.drop(['Patient_ID','Thyroid_Cancer_Risk','Diagnosis'], axis=1)
@@ -190,7 +203,7 @@ def get_predictions(model, X_tensor):
 preds_model1 = get_predictions(model1, X_test_tensor) # getting the predictions for the model
 print("Model 1 Test Predictions (first 10):", preds_model1[:10])
 
-torch.save(model1.state_dict(), "model1_final.pth")  #saving the model for future use
+torch.save(model1.state_dict(), "models/model1_final.pth")  #saving the model for future use
 
 
 
@@ -225,7 +238,7 @@ train_model(model2,optimizer2,criterion,X_train_tensor,y_train_tensor,X_test_ten
 preds_model2 = get_predictions(model2, X_test_tensor) # getting the predictions for the model
 print("Model 2 Test Predictions (first 10):", preds_model2[:10])
 
-torch.save(model2.state_dict(), "model2_final.pth") #saving the model for future use
+torch.save(model2.state_dict(), "models/model2_final.pth") #saving the model for future use
 
 
 
@@ -267,4 +280,4 @@ train_model(model3,optimizer3,criterion,X_train_tensor,y_train_tensor,X_test_ten
 preds_model3 = get_predictions(model3, X_test_tensor)
 print("Model 3 Test Predictions (first 10):", preds_model3[:10])
 
-torch.save(model3.state_dict(), "model3_final.pth") #saving the model for further use
+torch.save(model3.state_dict(), "models/model3_final.pth") #saving the model for further use
