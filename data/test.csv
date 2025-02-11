@@ -1,0 +1,101 @@
+Patient_ID,Age,Gender,Country,Ethnicity,Family_History,Radiation_Exposure,Iodine_Deficiency,Smoking,Obesity,Diabetes,TSH_Level,T3_Level,T4_Level,Nodule_Size,Thyroid_Cancer_Risk,Diagnosis
+82563,81,Male,Russia,Middle Eastern,No,No,Yes,No,Yes,No,0.81,0.72,4.57,0.72,Low,Malignant
+101550,19,Female,India,Asian,Yes,No,No,Yes,No,No,9.9,2.38,6.17,0.7,High,Benign
+97402,44,Male,Brazil,Caucasian,Yes,No,No,Yes,No,No,0.96,0.95,7.92,3.79,Medium,Benign
+105416,56,Female,Nigeria,Hispanic,No,No,No,No,No,No,5.49,0.74,8.39,4.75,Low,Malignant
+152388,86,Male,Nigeria,Hispanic,Yes,No,No,No,No,No,7.28,3.04,10.79,4.57,Medium,Benign
+177488,86,Female,China,Middle Eastern,No,No,No,No,No,No,1.66,1.65,10.96,0.27,Low,Benign
+73422,22,Female,Nigeria,Asian,No,Yes,Yes,No,No,Yes,2.48,1.65,10.29,0.7,Low,Benign
+197635,58,Female,USA,African,No,Yes,No,No,No,No,0.83,2.16,9.84,1.5,High,Malignant
+205432,29,Male,India,African,Yes,No,Yes,Yes,No,No,8.2,1.42,6.81,3.13,High,Malignant
+211692,80,Female,India,African,No,No,No,No,No,No,4.42,2.09,8.99,2.57,Medium,Benign
+135503,53,Female,Russia,Asian,No,No,No,No,No,No,2.24,2.55,7.35,0.22,Low,Benign
+55662,67,Male,China,Caucasian,No,No,Yes,No,No,No,0.9,2.17,5.22,0.48,Low,Benign
+74468,78,Male,Nigeria,Caucasian,No,No,No,No,No,No,5.76,2.1,6.18,0.02,Low,Benign
+172157,23,Male,Nigeria,Middle Eastern,No,No,Yes,No,Yes,Yes,6.31,0.93,8.25,3.74,Low,Benign
+60832,60,Female,Nigeria,Caucasian,No,No,No,No,Yes,No,4.3,2.95,7.76,4.67,Medium,Benign
+21497,24,Male,Nigeria,Caucasian,No,No,No,No,Yes,No,1.22,3.11,7.06,0.08,Low,Malignant
+84435,23,Female,Japan,Hispanic,No,Yes,No,Yes,No,No,0.72,1.45,10.35,2.86,Low,Benign
+130637,81,Female,Brazil,Caucasian,Yes,No,No,No,No,No,3.22,1.43,10.19,3.36,Low,Benign
+16701,63,Male,Brazil,Caucasian,No,No,No,No,No,No,9.15,2.76,10.6,4.81,Low,Benign
+141242,49,Male,China,Caucasian,No,No,No,No,No,No,9.42,0.63,11.22,4.1,Medium,Malignant
+112473,89,Female,India,Caucasian,No,No,No,Yes,No,No,0.93,1.23,6.63,3.72,Medium,Benign
+186020,43,Male,Brazil,Hispanic,No,No,Yes,No,Yes,Yes,8.29,2.09,5.47,2.44,Low,Benign
+22234,22,Male,South Korea,African,No,Yes,No,No,No,No,5.68,1.77,4.93,0.45,High,Malignant
+27747,29,Female,USA,Hispanic,Yes,No,No,No,No,No,2.1,2.43,8.41,0.46,Medium,Benign
+205928,37,Male,Nigeria,Caucasian,No,Yes,No,Yes,No,Yes,6.22,1.63,11.74,3.56,Medium,Benign
+142186,23,Female,China,Hispanic,Yes,Yes,Yes,Yes,Yes,No,8.36,2.02,7.1,0.19,Medium,Benign
+7252,39,Male,Brazil,African,Yes,No,No,No,No,No,0.25,0.77,5.46,3.26,Medium,Benign
+210097,71,Female,China,African,No,No,Yes,No,No,No,3.5,1.79,6.13,2.59,Medium,Benign
+170861,87,Male,Japan,Caucasian,No,No,No,No,No,No,7.98,2.9,6.16,2.97,Low,Benign
+14869,40,Male,Nigeria,Asian,Yes,No,No,No,No,No,8.01,2.6,10.25,2.76,High,Malignant
+168555,40,Male,South Korea,Caucasian,No,No,No,No,No,Yes,6.11,0.61,5.62,1.07,Low,Benign
+163921,40,Female,China,Asian,No,No,No,No,No,No,4.79,2.04,9.55,2.21,Low,Malignant
+173684,56,Female,Russia,Caucasian,No,Yes,No,Yes,No,No,6.68,3.09,11.57,4.71,Low,Benign
+179489,68,Female,Brazil,African,No,No,No,No,No,Yes,9.81,1.76,11.63,0.18,Medium,Benign
+46824,21,Female,China,Caucasian,No,No,No,No,No,No,1.47,3.48,7.49,4.34,Low,Benign
+38815,42,Male,Russia,Caucasian,No,No,No,Yes,No,No,2.04,1.06,8.46,1.44,Low,Benign
+160280,77,Female,South Korea,Hispanic,No,No,No,No,Yes,No,9.21,2.49,6.01,3.86,Medium,Benign
+48537,27,Male,Nigeria,African,No,No,No,Yes,No,No,6.43,3.17,10.98,1.28,Low,Benign
+147837,43,Female,UK,Asian,No,No,No,No,No,No,3.43,3.03,7.29,3.32,Low,Benign
+82877,53,Female,South Korea,Hispanic,No,No,Yes,Yes,No,No,9.8,2.21,5.84,3.69,Low,Benign
+4404,86,Female,South Korea,African,No,No,No,No,Yes,No,3.77,0.7,4.66,0.51,Low,Benign
+107297,26,Female,Nigeria,Caucasian,Yes,No,No,No,No,Yes,9.21,1.87,9.77,2.6,Low,Malignant
+128316,43,Male,China,Asian,No,No,No,No,No,Yes,4.03,2.47,7.98,2.79,Low,Benign
+151184,74,Female,Nigeria,African,No,No,Yes,No,No,No,1.53,0.75,11.17,3.16,Medium,Benign
+100857,66,Female,USA,Asian,No,No,No,No,No,Yes,7.37,0.64,7.88,3.13,Low,Benign
+32438,28,Male,China,Caucasian,Yes,No,Yes,Yes,No,No,6.5,1.52,11.43,0.05,Low,Benign
+82023,55,Female,Nigeria,Caucasian,Yes,No,No,No,No,No,4.77,3.34,6.91,0.83,Low,Benign
+108856,15,Female,Nigeria,Middle Eastern,Yes,No,No,Yes,No,No,9.03,1.44,8.93,4.07,Medium,Benign
+104523,21,Female,China,Caucasian,Yes,No,No,No,No,Yes,4.9,2.64,7.57,1.54,Low,Malignant
+72425,41,Female,Brazil,Middle Eastern,No,No,No,No,No,No,1.26,1.04,5.31,1.23,Low,Benign
+22649,25,Female,India,Asian,Yes,No,Yes,No,No,Yes,3.36,1.92,5.23,1.91,High,Benign
+72330,84,Male,Nigeria,Caucasian,No,Yes,No,No,No,No,5.88,3.11,7.94,2.33,Low,Benign
+173996,15,Female,India,African,No,No,No,Yes,No,No,0.84,2.6,8.45,1.39,Low,Benign
+194878,35,Male,Germany,Caucasian,No,No,Yes,No,No,No,2.59,1.75,6.03,3.57,Medium,Benign
+160854,35,Female,China,Asian,Yes,No,No,No,No,Yes,6.39,1.44,10.82,4.17,High,Malignant
+129068,20,Female,South Korea,Asian,No,Yes,Yes,No,Yes,No,2.61,3.17,9.3,2.48,Low,Benign
+190882,51,Female,Nigeria,Caucasian,No,No,No,No,Yes,No,8.33,2.29,11.42,3.51,Low,Benign
+180903,17,Male,India,Caucasian,No,No,No,No,No,No,8.13,1.54,4.52,0.62,Low,Benign
+117856,86,Female,South Korea,Caucasian,No,No,No,No,No,No,0.53,3.34,7.5,0.48,Medium,Benign
+48137,22,Female,Germany,Caucasian,No,No,No,No,Yes,No,3.94,2.23,11.32,0.34,Medium,Benign
+1712,22,Male,South Korea,Caucasian,No,No,No,Yes,No,No,1.64,1.66,6.76,2.11,Medium,Benign
+22761,64,Female,Nigeria,Caucasian,No,No,No,Yes,No,Yes,0.16,3.41,6.12,4.78,Low,Benign
+82581,87,Male,Nigeria,Caucasian,No,No,Yes,No,No,No,6.35,0.67,8.47,3.04,Low,Benign
+207095,33,Female,Brazil,Asian,Yes,No,No,Yes,No,No,6.03,0.73,8.0,3.4,High,Malignant
+99691,21,Female,Brazil,Asian,No,No,Yes,No,No,No,5.67,0.5,7.0,2.45,Low,Malignant
+125456,41,Male,Nigeria,Caucasian,No,No,No,Yes,No,No,1.62,0.6,9.82,1.4,Low,Malignant
+27382,35,Female,Brazil,Asian,Yes,No,No,Yes,No,No,5.13,2.15,6.58,0.01,High,Malignant
+108635,56,Male,USA,African,No,No,No,Yes,No,No,3.05,3.24,6.83,1.66,Medium,Malignant
+88382,22,Female,Russia,Asian,No,No,No,No,Yes,No,4.57,1.88,9.89,3.66,Low,Benign
+22859,17,Male,India,African,No,No,No,No,No,Yes,9.13,2.83,6.62,2.45,Low,Malignant
+31424,18,Female,India,African,No,No,Yes,Yes,Yes,No,9.42,2.92,5.01,2.46,High,Malignant
+36044,69,Female,Japan,African,Yes,No,No,No,No,Yes,1.11,2.19,5.07,4.05,Medium,Benign
+179151,23,Female,India,Asian,Yes,No,Yes,No,No,No,0.64,1.26,7.22,3.48,High,Malignant
+204443,43,Male,Brazil,Caucasian,No,No,No,No,No,No,8.92,1.89,6.73,1.84,Medium,Benign
+106763,59,Female,India,Caucasian,Yes,Yes,No,No,No,No,2.26,1.48,11.26,0.48,Low,Benign
+104553,15,Female,Nigeria,Asian,No,No,Yes,No,Yes,Yes,3.71,0.65,8.5,1.08,Medium,Benign
+122077,39,Male,Germany,Middle Eastern,Yes,No,No,No,Yes,No,0.86,1.86,5.5,1.37,Low,Benign
+122838,23,Male,UK,Caucasian,No,No,Yes,No,Yes,No,4.49,1.93,6.51,0.43,Medium,Benign
+59191,57,Male,Brazil,Hispanic,No,No,No,Yes,Yes,Yes,7.48,2.15,7.22,2.48,Medium,Benign
+182503,33,Female,India,Caucasian,No,No,No,No,No,No,6.89,3.21,5.43,3.48,Low,Benign
+158155,33,Female,India,Caucasian,No,No,Yes,No,No,No,6.49,3.19,9.25,0.42,High,Malignant
+161968,54,Male,China,Middle Eastern,No,No,No,No,No,No,0.94,2.16,10.12,4.32,Low,Benign
+80382,89,Female,Japan,Caucasian,Yes,No,No,No,No,Yes,7.25,0.78,7.17,0.38,Medium,Benign
+206304,79,Female,India,Caucasian,Yes,No,No,No,No,No,0.23,3.08,11.81,0.97,Medium,Benign
+52286,35,Female,China,African,Yes,No,No,No,No,Yes,2.72,0.99,8.76,4.84,Medium,Benign
+201477,76,Female,Japan,Middle Eastern,No,No,Yes,No,No,Yes,1.83,2.99,5.75,0.23,Low,Benign
+63779,49,Female,Russia,Asian,No,No,No,No,No,No,9.99,1.8,8.69,0.22,Low,Benign
+109626,73,Female,UK,Asian,No,No,No,No,No,No,9.56,3.07,8.91,4.86,Low,Benign
+191402,42,Female,India,Hispanic,No,No,No,No,No,No,1.12,1.54,4.71,1.44,Medium,Benign
+132469,16,Female,Brazil,Caucasian,No,No,No,No,Yes,No,6.91,2.12,6.76,3.72,Low,Malignant
+207516,57,Female,India,African,Yes,No,Yes,No,No,No,9.71,1.93,7.22,4.38,High,Malignant
+132127,70,Male,Russia,Hispanic,Yes,No,No,Yes,No,No,6.46,3.04,7.58,4.96,Low,Benign
+193776,63,Female,Nigeria,African,No,No,No,No,No,No,6.45,2.48,10.09,0.3,Medium,Benign
+146556,48,Male,UK,Hispanic,No,No,Yes,No,No,No,8.9,3.33,10.58,1.49,Low,Benign
+58909,77,Female,Russia,Caucasian,No,No,No,Yes,No,No,3.15,0.92,11.66,0.54,Low,Benign
+136772,70,Male,China,African,Yes,No,No,Yes,No,No,5.42,1.58,9.26,0.22,Low,Benign
+175402,56,Female,Japan,Asian,No,No,No,No,Yes,No,4.01,1.81,6.63,2.41,Low,Benign
+160833,80,Female,South Korea,Caucasian,No,Yes,No,No,No,No,6.82,2.45,9.98,2.96,Medium,Benign
+122891,47,Female,UK,Middle Eastern,No,No,No,No,Yes,No,5.91,2.65,8.6,1.63,Low,Benign
+13970,58,Female,USA,Hispanic,Yes,No,Yes,Yes,Yes,No,4.24,1.69,10.18,2.45,Medium,Benign

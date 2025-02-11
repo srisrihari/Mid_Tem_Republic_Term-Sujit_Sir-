@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thyroid Cancer Risk Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container { max-width: 800px; }
+        .header { margin: 2rem 0; }
+        .upload-form { margin: 2rem 0; }
+        .results { margin: 2rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header text-center">
+            <h1>Thyroid Cancer Risk Prediction</h1>
+            <p class="lead">Upload a CSV file to get predictions</p>
+        </div>
+
+        <!-- Model Status Card -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Model Status</h5>
+                <p class="card-text">
+                    Current Model: <span class="badge {% if model_loaded %}bg-success{% else %}bg-danger{% endif %}">
+                        {% if model_loaded %}Loaded{% else %}Not Loaded{% endif %}
+                    </span>
+                </p>
+                <form action="/upload_model" method="post" enctype="multipart/form-data" class="mb-3">
+                    <div class="mb-3">
+                        <label for="model_file" class="form-label">Upload New Model (.pth file)</label>
+                        <input type="file" class="form-control" id="model_file" name="model_file" accept=".pth" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Upload Model</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="upload-form">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upload Data</h5>
+                    <form action="/predict" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Choose CSV file</label>
+                            <input type="file" class="form-control" id="file" name="file" accept=".csv" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" {% if not model_loaded %}disabled{% endif %}>
+                            Get Predictions
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+            {{ success }}
+        </div>
+        {% endif %}
+
+        {% if predictions %}
+        <div class="results">
+            <h3>Predictions</h3>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Prediction</th>
+                            <th>Diagnosis</th>
+                            <th>Probability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pred in predictions %}
+                        <tr>
+                            <td>{{ pred.patient_id }}</td>
+                            <td>{{ pred.prediction }}</td>
+                            <td>{{ pred.diagnosis }}</td>
+                            <td>{{ "%.2f"|format(pred.probability) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Required Columns</h5>
+                <p class="card-text">Your CSV file must include the following columns:</p>
+                <ul>
+                    <li>Age (Numeric: 15-89 years)</li>
+                    <li>Gender (Binary: Male/Female)</li>
+                    <li>Country (Categorical)</li>
+                    <li>Ethnicity (Categorical)</li>
+                    <li>Family_History (Binary: Yes/No)</li>
+                    <li>Radiation_Exposure (Binary: Yes/No)</li>
+                    <li>Iodine_Deficiency (Binary: Yes/No)</li>
+                    <li>Smoking (Binary: Yes/No)</li>
+                    <li>Obesity (Binary: Yes/No)</li>
+                    <li>Diabetes (Binary: Yes/No)</li>
+                    <li>TSH_Level (Numeric: 0.10-10.00)</li>
+                    <li>T3_Level (Numeric: 0.50-3.50)</li>
+                    <li>T4_Level (Numeric: 4.50-12.00)</li>
+                    <li>Nodule_Size (Numeric: 0.00-5.00 cm)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
