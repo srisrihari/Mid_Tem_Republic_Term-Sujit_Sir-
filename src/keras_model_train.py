@@ -35,19 +35,43 @@ binarycol = ['Gender', 'Family_History', 'Radiation_Exposure', 'Iodine_Deficienc
              'Smoking', 'Obesity', 'Diabetes', 'Diagnosis']
 nonbinarycol = ['Country', 'Ethnicity']
 
+# Splitting features and target first
+X = data.drop(['Patient_ID', 'Thyroid_Cancer_Risk', 'Diagnosis'], axis=1)
+y = data['Diagnosis']
+
+# Train-test split before encoding
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+                                                    random_state=42, stratify=y)
+
 # Label encoding binary columns
 label_encoder = {}
-for col in binarycol:
+for col in binarycol[:-1]:  # Excluding 'Diagnosis' as it's already split
     label_encoder[col] = LabelEncoder()
-    data[col] = label_encoder[col].fit_transform(data[col])
+    # Fit and transform on training data
+    X_train[col] = label_encoder[col].fit_transform(X_train[col])
+    # Only transform on test data
+    X_test[col] = label_encoder[col].transform(X_test[col])
 
 # One hot encoding non-binary columns
 one_hot_encoder = OneHotEncoder(sparse_output=False, drop='first')
-encoded_data = one_hot_encoder.fit_transform(data[nonbinarycol])
-one_hot_data = pd.DataFrame(encoded_data, 
-                           columns=one_hot_encoder.get_feature_names_out(nonbinarycol))
-data = pd.concat([data, one_hot_data], axis=1)
-data.drop(nonbinarycol, axis=1, inplace=True)
+# Fit and transform on training data
+train_encoded_data = one_hot_encoder.fit_transform(X_train[nonbinarycol])
+# Only transform on test data
+test_encoded_data = one_hot_encoder.transform(X_test[nonbinarycol])
+
+# Create DataFrames with encoded columns
+train_encoded_df = pd.DataFrame(train_encoded_data, 
+                              columns=one_hot_encoder.get_feature_names_out(nonbinarycol),
+                              index=X_train.index)
+test_encoded_df = pd.DataFrame(test_encoded_data, 
+                             columns=one_hot_encoder.get_feature_names_out(nonbinarycol),
+                             index=X_test.index)
+
+# Drop original categorical columns and add encoded ones
+X_train = X_train.drop(nonbinarycol, axis=1)
+X_test = X_test.drop(nonbinarycol, axis=1)
+X_train = pd.concat([X_train, train_encoded_df], axis=1)
+X_test = pd.concat([X_test, test_encoded_df], axis=1)
 
 # Save preprocessing objects
 preprocessing_objects = {
@@ -59,14 +83,6 @@ preprocessing_objects = {
 
 with open('models/preprocessing_objects.pkl', 'wb') as f:
     pickle.dump(preprocessing_objects, f)
-
-# Splitting features and target
-X = data.drop(['Patient_ID', 'Thyroid_Cancer_Risk', 'Diagnosis'], axis=1)
-y = data['Diagnosis']
-
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
-                                                    random_state=42, stratify=y)
 
 print("Training set shape:", X_train.shape)
 print("Testing set shape:", X_test.shape)
