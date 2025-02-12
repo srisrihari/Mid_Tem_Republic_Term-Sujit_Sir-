@@ -278,13 +278,17 @@ def main():
     parser = argparse.ArgumentParser(description='Thyroid Cancer Risk Prediction CLI')
     parser.add_argument('--input', type=str, help='Input CSV file path')
     parser.add_argument('--output', type=str, help='Output predictions file path')
-    parser.add_argument('--interactive', action='store_true', help='Run in interactive mode')
+    parser.add_argument('--batch', action='store_true', help='Run in batch mode')
     args = parser.parse_args()
 
     try:
         model, device = load_model()
         
-        if args.interactive:
+        # If both input and output are provided, run in batch mode
+        if args.input and args.output:
+            print(f"\n📊 Processing file: {args.input}")
+            predict_from_csv(model, device, args.input, args.output)
+        else:
             # Interactive mode
             while True:
                 print("\n📌 Thyroid Cancer Risk Prediction CLI")
@@ -303,14 +307,6 @@ def main():
                     break
                 else:
                     print("❌ Invalid choice! Please select 1, 2, or 3.")
-        else:
-            # Batch mode
-            if not args.input or not args.output:
-                print("❌ Error: --input and --output are required in batch mode")
-                return 1
-            
-            print(f"\n📊 Processing file: {args.input}")
-            predict_from_csv(model, device, args.input, args.output)
     
     except Exception as e:
         print(f"❌ Error: {str(e)}")

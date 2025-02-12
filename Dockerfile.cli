@@ -21,5 +21,5 @@ RUN mkdir -p /app/models && \
     chmod 777 /app/data && \
     chmod 777 /app/predictions
 
-# Set the entrypoint to allow command line arguments
-ENTRYPOINT ["python", "src/app.py"] 
+# Set the command to run in interactive mode by default
+CMD ["python", "src/app.py"] 
